@@ -3,7 +3,6 @@ import {
   EditorContent,
   BubbleMenu,
   FloatingMenu,
-  
 } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { InitialContent } from "./initial-content";
@@ -18,13 +17,14 @@ import {
   RxChevronDown,
   RxChatBubble,
 } from "react-icons/rx";
+import BulletList from "@tiptap/extension-bullet-list";
+import OrderedList from "@tiptap/extension-ordered-list";
 
-import { PiTextAa, PiTextHOne } from "react-icons/pi";
+import { PiListBullets, PiListDashes, PiTextAa, PiTextHOne } from "react-icons/pi";
 
 import "highlight.js/styles/github-dark.css";
 import { BubbleButton } from "./bubble-button";
 import { FloatButton } from "./float-menu-button";
-import { listItem } from "@tiptap/pm/schema-list";
 
 lowlight.registerLanguage("js", js);
 
@@ -54,14 +54,6 @@ export function Editor() {
           editor={editor}
           className="bg-zinc-700 shadow-xl border border-zinc-600 shadow-black/20 rounded-lg overflow-hidden flex divide-x divide-zinc-600 "
         >
-          <BubbleButton>
-            Text
-            <RxChevronDown className="w-4 h-4" />
-          </BubbleButton>
-          <BubbleButton>
-            Comment
-            <RxChatBubble className="w-4 h-4" />
-          </BubbleButton>
           <div className="flex items-center">
             <BubbleButton
               onClick={() => editor.chain().focus().toggleBold().run()}
@@ -101,16 +93,16 @@ export function Editor() {
           }}
         >
           <FloatButton
-            onClick={() =>
-            editor.commands.toggleList('ordered_list', 'list_item', true)
-            }
+            onClick={() => editor.chain().focus().toggleBulletList().run()}
           >
             <div className="w-12 ">
-              <PiTextHOne size={30} />
+              <PiListBullets size={30} />
             </div>
             <div className="flex flex-col text-left">
               <span className="text-sm">List</span>
-              <span className="text-xs text-zinc-400">Insert a new list.</span>
+              <span className="text-xs text-zinc-400">
+                Insert a new bullet list.
+              </span>
             </div>
           </FloatButton>
           <FloatButton
@@ -128,15 +120,15 @@ export function Editor() {
               </span>
             </div>
           </FloatButton>
-          <FloatButton>
+          <FloatButton
+            onClick={() => editor.chain().focus().toggleOrderedList().run()}
+          >
             <div className="w-12 ">
-              <PiTextAa size={30} />
+              <PiListDashes size={30} />
             </div>
             <div className="flex flex-col text-left">
-              <span className="text-sm">Text</span>
-              <span className="text-xs text-zinc-400">
-                Just start writing with plain text.
-              </span>
+              <span className="text-sm">Enumered list</span>
+              <span className="text-xs text-zinc-400">Enum list item.</span>
             </div>
           </FloatButton>
           <FloatButton onClick={() => editor.commands.clearContent()}>
