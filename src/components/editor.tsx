@@ -1,4 +1,10 @@
-import { useEditor, EditorContent, BubbleMenu } from "@tiptap/react";
+import {
+  useEditor,
+  EditorContent,
+  BubbleMenu,
+  FloatingMenu,
+  
+} from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { InitialContent } from "./initial-content";
 import { lowlight } from "lowlight";
@@ -13,8 +19,12 @@ import {
   RxChatBubble,
 } from "react-icons/rx";
 
+import { PiTextAa, PiTextHOne } from "react-icons/pi";
+
 import "highlight.js/styles/github-dark.css";
 import { BubbleButton } from "./bubble-button";
+import { FloatButton } from "./float-menu-button";
+import { listItem } from "@tiptap/pm/schema-list";
 
 lowlight.registerLanguage("js", js);
 
@@ -72,13 +82,75 @@ export function Editor() {
               <RxStrikethrough className="w-4 h-4" />
             </BubbleButton>
             <BubbleButton
-               onClick={() => editor.chain().focus().toggleCode().run()}
+              onClick={() => editor.chain().focus().toggleCode().run()}
               data-active={editor.isActive("bold")}
             >
               <RxCode className="w-4 h-4" />
             </BubbleButton>
           </div>
         </BubbleMenu>
+      )}
+      {editor && (
+        <FloatingMenu
+          className="bg-zinc-700 shadow-xl border border-zinc-600 shadow-black/20 rounded-lg overflow-hidden flex flex-col gap-2 py-2 px-1"
+          editor={editor}
+          shouldShow={({ state }) => {
+            const { $from } = state.selection;
+            const currentLineText = $from.nodeBefore?.textContent;
+            return currentLineText === "/";
+          }}
+        >
+          <FloatButton
+            onClick={() =>
+            editor.commands.toggleList('ordered_list', 'list_item', true)
+            }
+          >
+            <div className="w-12 ">
+              <PiTextHOne size={30} />
+            </div>
+            <div className="flex flex-col text-left">
+              <span className="text-sm">List</span>
+              <span className="text-xs text-zinc-400">Insert a new list.</span>
+            </div>
+          </FloatButton>
+          <FloatButton
+            onClick={() =>
+              editor.chain().focus().toggleHeading({ level: 1 }).run()
+            }
+          >
+            <div className="w-12 ">
+              <PiTextHOne size={30} />
+            </div>
+            <div className="flex flex-col text-left">
+              <span className="text-sm">Heading 1</span>
+              <span className="text-xs text-zinc-400">
+                Big section heading.
+              </span>
+            </div>
+          </FloatButton>
+          <FloatButton>
+            <div className="w-12 ">
+              <PiTextAa size={30} />
+            </div>
+            <div className="flex flex-col text-left">
+              <span className="text-sm">Text</span>
+              <span className="text-xs text-zinc-400">
+                Just start writing with plain text.
+              </span>
+            </div>
+          </FloatButton>
+          <FloatButton onClick={() => editor.commands.clearContent()}>
+            <div className="w-12 ">
+              <PiTextAa size={30} />
+            </div>
+            <div className="flex flex-col text-left">
+              <span className="text-sm">Clear document</span>
+              <span className="text-xs text-zinc-400">
+                Delete all content in document.
+              </span>
+            </div>
+          </FloatButton>
+        </FloatingMenu>
       )}
     </>
   );
